@@ -16,13 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import hello, articles
-from test_s import urls as urls_test
+#from test_s import urls as urls_test
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from clinic import views as clinic_views
 
 urlpatterns = [
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('register/', clinic_views.SignUp.as_view(), name='register'),
     path('hello/', hello, name="hello"),
     path('articles/<int:year>/', articles, name="articles"),
-    path('test/', include(urls_test)),
+    # path('test/', include(urls_test)),
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
