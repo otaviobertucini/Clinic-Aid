@@ -124,7 +124,7 @@ STATICFILES_DIRS = ['static']
 
 LOGIN_URL= '/login'
 
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'hello'
 
 AUTH_USER_MODEL = 'clinic.CustomUser'
 
