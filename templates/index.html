@@ -6,21 +6,27 @@
 {% block main %}
 
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="#">logout</a></p>
+
+    Hi {{ user.username }}!
+    <p><a href="#">logout</a></p>
+
+    {% if user.role == "medic" %}
+
+        <p> medico </p>
+
+    {% endif %}
+
+    {% if user.role == "secretary" %}
+
+        <p> secretaria </p>
+
+    {% endif %}
+
+
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'signup' %}">signup</a>
+
+<p>You are not logged in</p>
+<a href="{% url 'register' %}">signup</a>
 {% endif %}
-
-  {% if user.role == "medic" %}
-
-  <p> asidjuasjd </p>
-
-  {% else %}
-
-  <p> n eh medico </p>
-
-  {% endif %}
 
 {% endblock %}
