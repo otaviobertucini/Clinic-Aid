@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'clinic',
     'test_s',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -127,5 +128,7 @@ LOGIN_URL= '/login'
 LOGIN_REDIRECT_URL = 'hello'
 
 AUTH_USER_MODEL = 'clinic.CustomUser'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
