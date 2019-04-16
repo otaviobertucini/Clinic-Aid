@@ -8,11 +8,34 @@
     <br>
     SECRETARY: jana secre123
 
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit">Login</button>
-    </form>
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height:100vh">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <p>Usuário: </p>
+                                <input type="text" class="form-control" name="username">
+                            </div>
+                            <div class="form-group">
+                                <p>Senha: </p>
+                                <input type="password" class="form-control" name="password">
+                            </div>
+                            <button type="submit" class="btn btn-primary">login</button>
+                        </form>
+
+                        {% if form.errors %}
+
+                            <p>Usuário ou senha incorretos!</p>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
