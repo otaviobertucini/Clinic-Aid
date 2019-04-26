@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from clinic.models import CustomUser
 
 def hello(request):
     user = request.user
@@ -14,3 +15,11 @@ def hello(request):
 @login_required
 def articles(request, year):
     return HttpResponse("You was born in: " + str(year))
+
+@login_required
+def search(request):
+    results = None
+    print(str(request.GET.get('name')))
+    if(request.GET.get('name') != None):
+        results = CustomUser.objects.all()
+    return render(request, 'search.html', {'results':results})

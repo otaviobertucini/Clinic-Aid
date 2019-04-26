@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import hello, articles
+from .views import hello, articles, search
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
@@ -27,4 +27,5 @@ urlpatterns = [
     path('hello/', hello, name="hello"),
     path('articles/<int:year>/', articles, name="articles"),
     path('admin/', admin.site.urls),
+    path('search/', search, name="search")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
