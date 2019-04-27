@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %} Página do paciente {% endblock %}
+
+{% block main %}
+
+    <div class="row">
+        <div class="col-sm-4">
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted"> Paciente </li>
+                <li class="list-group-item"><span><strong>Nome</strong></span> Otávio Thomas Bertucini</li>
+                <li class="list-group-item"><span><strong>CPF</strong></span> 999.999.999-99</li>
+                <li class="list-group-item"><span><strong>Telefone</strong></span> (49) 3444-1844 </li>
+                <li class="list-group-item"><span><strong>Plano</strong></span> Unimed </li>
+                <li class="list-group-item">
+                    <a href="{% url 'doc_selection' %}" class="btn btn-success btn-lg active"
+                       role="button" aria-pressed="true">
+                        Nova Consulta
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-sm-8">
+
+<!--            TODO: FAZER COM QUE AS CONSULTAS SEJAM LINKS PARA ELAS MESMAS-->
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted"> Consultas </li>
+                <li class="list-group-item">
+                    <span><strong>Médico: </strong></span ><span class="span_list"> Dr. Carlos</span>
+                    <span><strong>Data: </strong></span> <span class="span_list"> 12/05/2019 </span>
+                    <span><strong>Horário: </strong></span> <span class="span_list"> 10:30 </span>
+
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+{% endblock %}
