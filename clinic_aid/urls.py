@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import hello, search, pacient_page, doc_selection, info_appt
+from .views import hello, pacient_page, doc_selection, info_appt
+from .views import Search
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
@@ -26,7 +27,7 @@ urlpatterns = [
     path('register/', clinic_views.SignUp.as_view(), name='register'),
     path('hello/', hello, name="hello"),
     path('admin/', admin.site.urls),
-    path('search/', search, name="search"),
+    path('search/', Search.as_view(), name="search"),
     path('pacient/<int:id>', pacient_page, name='pacient_page'),
     path('doc_selection', doc_selection, name='doc_selection'),
     path('info_appt', info_appt, name='info_appt')

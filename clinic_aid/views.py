@@ -1,7 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from clinic.models import CustomUser
+from django.views import View
+
 
 def hello(request):
     user = request.user
@@ -12,22 +15,29 @@ def hello(request):
             return render(request, "home_secretary.html")
     return render(request, "error_message.html")
 
-@login_required
-def search(request):
+
+class Search(View):
+
     results = None
-    if(request.GET.get('name') != None):
-        if(request.GET.get('type_search') == 'name_check'):
-            pass
-        elif(request.GET.get('type_search') == 'cpf_check'):
-            pass
-        else:
-            return render(request, 'error_message.html')
-        results = CustomUser.objects.all()
-    return render(request, 'search.html', {'results':results})
+    template_name = 'search.html'
+
+    @method_decorator(login_required)
+    def get(self, request):
+        if request.GET.get('name') is not None:
+            if request.GET.get('type_search') == 'name_check':
+                pass
+            elif request.GET.get('type_search') == 'cpf_check':
+                pass
+            else:
+                return render(request, 'error_message.html')
+            self.results = CustomUser.objects.all()
+        return render(request, self.template_name, {'results':self.results})
+
 
 @login_required
 def pacient_page(request, id):
     return render(request, 'pacient_page.html')
+
 
 @login_required
 def doc_selection(request):
@@ -40,6 +50,7 @@ def doc_selection(request):
         return redirect('info_appt')
 
     return render(request, 'doc_selection.html', {'results':results})
+
 
 @login_required
 def info_appt(request):
