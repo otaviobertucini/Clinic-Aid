@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from clinic.models import CustomUser
 from django.views import View
+from clinic.forms import DocSelecionForm
 
 
 def hello(request):
@@ -42,14 +43,16 @@ def pacient_page(request, id):
 @login_required
 def doc_selection(request):
     results = None
-    if (request.GET.get('doctor') != None):
-        results = CustomUser.objects.all()
-        request.session['doctor'] = request.GET.get('doctor')
-        request.session['date'] = request.GET.get('date')
+    # if (request.GET.get('doctor') != None):
+    #     results = CustomUser.objects.all()
+    #     request.session['doctor'] = request.GET.get('doctor')
+    #     request.session['date'] = request.GET.get('date')
+    #
+    #     return redirect('info_appt')
 
-        return redirect('info_appt')
+    form = DocSelecionForm()
 
-    return render(request, 'doc_selection.html', {'results':results})
+    return render(request, 'doc_selection.html', {'results':results, 'form':form})
 
 
 @login_required

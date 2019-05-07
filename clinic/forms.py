@@ -4,15 +4,6 @@ from .models import CustomUser
 
 class CustomUserCreationForm(UserCreationForm):
 
-    # role = forms.CharField(
-    #     label='roleee',
-    #     max_length=1000,
-    #     required=True,
-    #     widget=forms.TextInput(
-    #         attrs={'class': 'csstest'}
-    #     )
-    # )
-
     role = forms.ChoiceField(choices=[("medic", "Medic"), ("secretary", "Secretary")],
                              required=True)
 
@@ -29,3 +20,7 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'role',]
+
+class DocSelecionForm(forms.Form):
+    doctor = forms.CharField(label="Name", required=True)
+    date = forms.DateField(required=True, )
