@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from clinic.models import CustomUser
 from django.views import View
-from clinic.forms import DocSelecionForm
+from clinic.extras import check_date
 
 
 def hello(request):
@@ -40,23 +40,34 @@ def pacient_page(request, id):
     return render(request, 'pacient_page.html')
 
 
-@login_required
-def doc_selection(request):
+class DocSelection(View):
     results = None
-    # if (request.GET.get('doctor') != None):
-    #     results = CustomUser.objects.all()
-    #     request.session['doctor'] = request.GET.get('doctor')
-    #     request.session['date'] = request.GET.get('date')
-    #
-    #     return redirect('info_appt')
 
-    form = DocSelecionForm()
+    @method_decorator(login_required)
+    def get(self, request):
+        error = ""
+        if request.GET.get('doctor') is not None:
+            if check_date(request.GET.get('date')):
+                request.session['doctor'] = request.GET.get('doctor')
+                request.session['date'] = request.GET.get('date')
+                return redirect('info_appt')
+            else:
+                error = "Data deve ser maior que o dia atual!"
+        return render(request, 'doc_selection.html', {'results': self.results, 'error': error})
 
-    return render(request, 'doc_selection.html', {'results':results, 'form':form})
+
+def test(request):
+    print("ok1")
+    return render(request, 'error_message.html')
 
 
-@login_required
-def info_appt(request):
-    doctor = request.session.get('doctor')
-    date = request.session.get('date')
-    return render(request, 'info_appt.html', {'doctor':doctor, 'date':date})
+# ControleAgendar
+class ScheduleControl(View):
+    results = None
+
+    @method_decorator(login_required)
+    def get(self, request):
+        doctor = request.session.get('doctor')
+        date = request.session.get('date')
+        return render(request, 'info_appt.html',
+                      {'doctor': doctor, 'date': date, 'range': range(9, 18)})
