@@ -1,6 +1,13 @@
 $(document).ready(function(){
 
-$("#doc_selection").validate();
+$(function(){
+
+    if($(".form_check").attr("required")){
+        $(".form_check").attr("oninvalid", "this.setCustomValidity('Campo obrigatório')");
+        $(".form_check").attr("oninput", "setCustomValidity('')");
+    }
+
+});
 
 //$("#doc_selection").validate({
 //    debug: true,

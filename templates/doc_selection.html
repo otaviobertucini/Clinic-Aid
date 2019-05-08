@@ -7,7 +7,7 @@
     <form method="get" id="doc_selection">
         <div class="form-group col-md-4">
             <label for="select_doctor">Doutor</label>
-            <select id="select_doctor" class="form-control" name="doctor" required>
+            <select id="select_doctor" class="form-control form_check" name="doctor" required>
                 <option selected>Dr. Carlos</option>
                 <option>Dr. Carluxo</option>
                 {% for res in results %}
@@ -20,7 +20,7 @@
 
         <div class="form-group col-md-4">
             <label for="select_date">Data</label>
-            <input type="date" class="form-control" id="select_date" placeholder="Data" name="date" required>
+            <input type="date" class="form-control form_check" id="select_date" placeholder="Data" name="date" required>
         </div>
 
         <p id="error_doc_selection"> {{error}} </p>

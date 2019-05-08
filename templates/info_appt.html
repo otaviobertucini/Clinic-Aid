@@ -4,19 +4,18 @@
 
 {% block main %}
 
-    {% for i in range %}
-        {{ i }}
-    {% endfor %}
-
-    <form>
+    <form method="POST">
+        {% csrf_token %}
         <div class="form-group">
             <label for="select_horarios">Horários disponíveis</label>
-            <select multiple class="form-control" id="select_horarios">
-<!--                <option>1</option>-->
-<!--                <option>2</option>-->
-<!--                <option>3</option>-->
-<!--                <option>4</option>-->
-<!--                <option>5</option>-->
+            <select multiple class="form-control form_check" id="select_horarios" required>
+
+                {% for time in times %}
+
+                    <option> {{ time }} </option>
+
+                {% endfor %}
+
             </select>
         </div>
         <div class="form-group">
@@ -27,6 +26,9 @@
             <label for="observations">Observações</label>
             <textarea class="form-control" id="observations" rows="3"></textarea>
         </div>
+
+        <button type="submit" class="btn btn-primary mb-2"> Cadastrar </button>
+
     </form>
 
 {% endblock %}

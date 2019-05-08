@@ -56,11 +56,6 @@ class DocSelection(View):
         return render(request, 'doc_selection.html', {'results': self.results, 'error': error})
 
 
-def test(request):
-    print("ok1")
-    return render(request, 'error_message.html')
-
-
 # ControleAgendar
 class ScheduleControl(View):
     results = None
@@ -69,5 +64,17 @@ class ScheduleControl(View):
     def get(self, request):
         doctor = request.session.get('doctor')
         date = request.session.get('date')
-        return render(request, 'info_appt.html',
-                      {'doctor': doctor, 'date': date, 'range': range(9, 18)})
+        # doctor = ''
+        # date = ''
+        used_times = []
+        times = []
+        for i in range(9, 18):
+            if i * 100 not in used_times:
+                times.append(str(i) + ":00")
+            if i * 100 + 30 not in used_times:
+                times.append(str(i) + ":30")
+
+        return render(request, 'info_appt.html', {'times': times})
+
+    def post(self, request):
+        return redirect('hello')
