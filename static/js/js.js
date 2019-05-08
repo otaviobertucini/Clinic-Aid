@@ -9,6 +9,16 @@ $(function(){
 
 });
 
+$(function(){
+
+    $("#submit_new_patient").click(function(){
+
+        //TODO: VERIFICATIONS
+
+    });
+
+});
+
 //$("#doc_selection").validate({
 //    debug: true,
 //    rules:{

@@ -32,12 +32,12 @@ class Search(View):
             else:
                 return render(request, 'error_message.html')
             self.results = CustomUser.objects.all()
-        return render(request, self.template_name, {'results':self.results})
+        return render(request, self.template_name, {'results': self.results})
 
 
 @login_required
-def pacient_page(request, id):
-    return render(request, 'pacient_page.html')
+def patient_page(request, id):
+    return render(request, 'patient_page.html')
 
 
 class DocSelection(View):
@@ -78,3 +78,11 @@ class ScheduleControl(View):
 
     def post(self, request):
         return redirect('hello')
+
+class RegisterPatient(View):
+
+    def get(self, request):
+        return render(request, 'register_patient.html')
+
+    def post(self, request):
+        return render(request, 'register_patient.html')
