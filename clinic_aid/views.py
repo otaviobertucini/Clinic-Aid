@@ -79,6 +79,7 @@ class ScheduleControl(View):
     def post(self, request):
         return redirect('hello')
 
+
 class RegisterPatient(View):
 
     def get(self, request):
@@ -87,3 +88,13 @@ class RegisterPatient(View):
     def post(self, request):
         print("Paciente cadastrado!")
         return redirect('hello')
+
+
+class SearchAppt(View):
+    results = None
+
+    def get(self, request):
+        if request.GET.get('name') is not None:
+            self.results = 'a' 
+
+        return render(request, 'search_appt.html', {'results': self.results})
