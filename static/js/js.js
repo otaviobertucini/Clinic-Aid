@@ -13,52 +13,20 @@ $(function(){
 
     $("#submit_new_patient").click(function(){
 
-        //TODO: VERIFICATIONS
+        $("#cpf_alert").attr("hidden", "true");
+
+        var ok = 1;
+        if($("#patient_cpf").val().length > 11 || $("#patient_cpf").val().length < 11){
+            $("#cpf_alert").removeAttr("hidden");
+            ok = 0;
+        }
+
+        if(ok == 1){
+            $("#form_new_patient").submit();
+        }
 
     });
 
 });
-
-//$("#doc_selection").validate({
-//    debug: true,
-//    rules:{
-//        select_doctor:{
-//            required: true
-//        },
-//        select_date:{
-//            required: true
-//        }
-//    },
-//    messages:{
-//        select_date:{
-//            accept: "Campo obrigatório!"
-//        }
-//    }
-//});
-
-//function isDate(date){
-//    alert("aaaaa");
-//}
-//
-//$(function(){
-//    $("button").click(function(){
-//        isDate("aaa");
-//    });
-//});
-
-//    $(function() {
-//
-//        $('#submit_doc_selection').bind('click', function(){
-//
-//            var txtVal =  $('#select_date').val();
-//
-//            if(isDate(txtVal))
-//                alert('Valid Date');
-//            else
-//                alert('Invalid Date');
-//        });
-//
-//    });
-
 
 });

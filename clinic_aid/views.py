@@ -85,4 +85,5 @@ class RegisterPatient(View):
         return render(request, 'register_patient.html')
 
     def post(self, request):
-        return render(request, 'register_patient.html')
+        print("Paciente cadastrado!")
+        return redirect('hello')
