@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import hello, patient_page
-from .views import Search, DocSelection, ScheduleControl, RegisterPatient, SearchAppt
+from .views import Search, DocSelection, ScheduleControl, RegisterPatient, \
+    SearchAppt, ApptPage, SeeAppt, RegisterReturn
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
@@ -33,4 +34,7 @@ urlpatterns = [
     path('info_appt', ScheduleControl.as_view(), name='info_appt'),
     path('new_paciente', RegisterPatient.as_view(), name='new_patient'),
     path('search_appt', SearchAppt.as_view(), name="search_appt"),
+    path('appt_page', ApptPage.as_view(), name="appt_page"),
+    path('see_appt', SeeAppt.as_view(), name="see_appt"),
+    path('reg_return', RegisterReturn.as_view(), name="reg_return"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

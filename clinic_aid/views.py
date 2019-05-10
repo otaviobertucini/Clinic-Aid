@@ -94,7 +94,62 @@ class SearchAppt(View):
     results = None
 
     def get(self, request):
+        request.session['active'] = 'no'
         if request.GET.get('name') is not None:
-            self.results = 'a' 
+            self.results = 'a'
 
         return render(request, 'search_appt.html', {'results': self.results})
+
+
+class ApptPage(View):
+
+    def get(self, request):
+        print(str(request.session.get('active')))
+        if(request.session.get('active') == 'yes'):
+            active = True
+        else:
+            active = False
+
+        return render(request, 'appt_page.html', {'active': active})
+
+
+class SeeAppt(View):
+
+    def get(self, request):
+        return render(request, 'see_appt.html')
+
+    def post(self, request):
+        request.session['active'] = 'yes'
+        return redirect('appt_page')
+
+
+class RegisterReturn(View):
+    times_ok = None
+    date = None
+
+    def get(self, request):
+        used_times = []
+        times = []
+        date = ''
+        if request.GET.get('date'):
+            if check_date(request.GET.get('date')):
+                request.session['date'] = request.GET.get('date')
+                for i in range(9, 18):
+                    if i * 100 not in used_times:
+                        times.append(str(i) + ":00")
+                    if i * 100 + 30 not in used_times:
+                        times.append(str(i) + ":30")
+                date_split = request.GET.get('date').split('-')
+                date = date_split[2] + '/' + date_split[1] + '/' + date_split[0]
+                self.times_ok = True
+            else:
+                print("data n ok")
+
+        return render(request, 'register_return.html',
+                      {'times_ok': self.times_ok, 'times': times,
+                       'date': date})
+
+    def post(self, request):
+        print(str(request.session.get('date')) + ' ' +
+              str(request.POST.get('select_horarios')))
+        return redirect('hello')

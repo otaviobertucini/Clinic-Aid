@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %} Página do paciente {% endblock %}
+
+{% block main %}
+
+    <div class="row">
+        <div class="col-sm-4">
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted"> Paciente </li>
+                <li class="list-group-item"><span><strong>Nome</strong></span> Otávio Thomas Bertucini</li>
+                <li class="list-group-item"><span><strong>CPF</strong></span> 999.999.999-99</li>
+                <li class="list-group-item"><span><strong>Telefone</strong></span> (49) 3444-1844 </li>
+                <li class="list-group-item"><span><strong>Plano</strong></span> Unimed </li>
+
+                {% if active == False %}
+
+                <li class="list-group-item">
+                    <a href="{% url 'see_appt' %}" class="btn btn-success btn-lg active float-left btn_appt"
+                       role="button" aria-pressed="true">
+                        Atender
+                    </a>
+                    <a href="#" class="btn btn-danger btn-lg active float-right btn_appt"
+                       role="button" aria-pressed="true">
+                        Cancelar
+                    </a>
+                </li>
+
+                {% else %}
+
+                <li class="list-group-item">
+                    <a href="{% url 'reg_return' %}" class="btn btn-success btn-lg active float-left"
+                       role="button" aria-pressed="true" id="return_button">
+                        Marcar retorno
+                    </a>
+                </li>
+
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="col-sm-8">
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted"> Dados Consulta </li>
+                <li class="list-group-item">
+                    <span><strong>Motivo: </strong></span >
+                    <span class="span_list"> Rinite </span>
+                </li>
+                <li class="list-group-item"> <span>
+                    <strong>Observações: </strong></span>
+                    <span class="span_list"> Paciente espirra muito </span>
+                </li>
+                <li class="list-group-item">
+                    <span><strong>Data: </strong>
+                    </span> <span class="span_list"> 12/05/2019 </span>
+                </li>
+                <li class="list-group-item">
+                    <span><strong>Horário: </strong>
+                    </span> <span class="span_list"> 10:30 </span>
+                </li>
+                <li class="list-group-item">
+                    <span><strong>Retorno: </strong>
+                    </span> <span class="span_list"> Não </span>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+{% endblock %}
