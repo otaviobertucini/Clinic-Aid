@@ -19,7 +19,7 @@
         <div class="form-check mb-2 mr-sm-2">
             <input class="form-check-input" type="radio" id="cpf_check" name="type_search" value="cpf_check">
             <label class="form-check-label" for="cpf_check">
-                CRM
+                CPF
             </label>
         </div>
 
@@ -27,21 +27,29 @@
 
     </form>
 
-    {% if results %}
+    {% if error %}
 
-        <div class="list-group" id="list-tab" role="tablist">
-            <a class="list-group-item list-group-item-action" href="{% url 'patient_page' 1 %}">
-                Otávio Thomas Bertucini
-            </a>
-
-            {% for res in results %}
-
-            <a class="list-group-item list-group-item-action" href="#">
-                {{res.username}}
-            </a>
-
-            {% endfor %}
+        <div class="alert alert-danger" role="alert">
+            Nenhum resultado encontrado!
         </div>
+
+    {% else %}
+
+        {% if results %}
+
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action" href="{% url 'patient_page' 1 %}">
+                    Otávio Thomas Bertucini
+                </a>
+
+                <a class="list-group-item list-group-item-action" href="{% url 'patient_page' 1 %}">
+                    Otávio Silva
+                </a>
+
+
+            </div>
+
+        {% endif %}
 
     {% endif %}
 

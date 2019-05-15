@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %} Confirmar {% endblock %}
+
+{% block main %}
+
+    <h3> Deseja atender o próximo paciente? </h3>
+
+    <a type="button" class="btn btn-success btn-primary"
+       href="{% url 'see_appt' %}">
+        Confirmar
+    </a>
+
+    <a type="button" class="btn btn-danger btn-primary"
+       href="{% url 'hello' %}">
+        Cancelar
+    </a>
+
+{% endblock %}

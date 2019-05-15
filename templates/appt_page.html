@@ -17,21 +17,43 @@
                 {% if active == False %}
 
                 <li class="list-group-item">
-                    <a href="{% url 'see_appt' %}" class="btn btn-success btn-lg active float-left btn_appt"
-                       role="button" aria-pressed="true">
-                        Atender
-                    </a>
-                    <a href="#" class="btn btn-danger btn-lg active float-right btn_appt"
-                       role="button" aria-pressed="true">
-                        Cancelar
-                    </a>
+                    {% if user.role == 'medic' %}
+
+                        <a href="{% url 'see_appt' %}" class="btn btn-success btn-lg active float-left btn_appt"
+                           role="button" aria-pressed="true">
+                            Atender
+                        </a>
+                        <a href="{% url 'search' %}" class="btn btn-danger btn-lg active float-right btn_appt"
+                           role="button" aria-pressed="true">
+                            Cancelar
+                        </a>
+
+                    {% else %}
+
+                        {% if active2 == 'no' %}
+
+                            <a href="{% url 'search' %}" class="btn btn-danger btn-lg active float-right return_button"
+                               role="button" aria-pressed="true">
+                                Cancelar
+                            </a>
+
+                        {% else %}
+
+                            <a href="{% url 'reg_return' %}" class="btn btn-success btn-lg active float-left return_button"
+                               role="button" aria-pressed="true">
+                                Marcar retorno
+                            </a>
+
+                        {% endif %}
+
+                    {% endif %}
                 </li>
 
                 {% else %}
 
                 <li class="list-group-item">
-                    <a href="{% url 'reg_return' %}" class="btn btn-success btn-lg active float-left"
-                       role="button" aria-pressed="true" id="return_button">
+                    <a href="{% url 'reg_return' %}" class="btn btn-success btn-lg active float-left return_button"
+                       role="button" aria-pressed="true">
                         Marcar retorno
                     </a>
                 </li>

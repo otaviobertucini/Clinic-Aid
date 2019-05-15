@@ -39,20 +39,32 @@
 
     </form>
 
-    {% if results %}
+    {% if error %}
 
-        <div class="list-group" id="list-tab" role="tablist">
+        <div class="alert alert-danger" role="alert">
+            Nenhum resultado encontrado!
+        </div>
 
-            <ul class="list-group">
-                <a class="list-group-item list-group-item-action" href="{% url 'appt_page' %}">
-                    <span><strong>Paciente: </strong></span ><span class="span_list"> Otávio Bertucini</span>
-                    <span><strong>Médico: </strong></span ><span class="span_list"> Dr. Carlos</span>
-                    <span><strong>Data: </strong></span> <span class="span_list"> 12/05/2019 </span>
-                    <span><strong>Horário: </strong></span> <span class="span_list"> 10:30 </span>
+    {% else %}
 
-                </a>
+        {% if results %}
 
-            </ul>
+            <div class="list-group" id="list-tab" role="tablist">
+
+                <ul class="list-group">
+                    <a class="list-group-item list-group-item-action" href="{% url 'appt_page' %}">
+                        <span><strong>Paciente: </strong></span ><span class="span_list"> Otávio Bertucini</span>
+                        <span><strong>Médico: </strong></span ><span class="span_list"> Dr. Carlos</span>
+                        <span><strong>Data: </strong></span> <span class="span_list"> 12/05/2019 </span>
+                        <span><strong>Horário: </strong></span> <span class="span_list"> 10:30 </span>
+
+                    </a>
+
+                </ul>
+
+            </div>
+
+        {% endif %}
 
     {% endif %}
 
