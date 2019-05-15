@@ -7,13 +7,16 @@ from django.views import View
 from clinic.extras import check_date
 
 
+appt_ative = 'no'
+
+
 def hello(request):
     user = request.user
     if(user.is_authenticated):
         if(request.user.role == "medic"):
-            return render(request, "home_doctor.html")
+            return redirect("search")
         elif(user.role == "secretary"):
-            return render(request, "home_secretary.html")
+            return redirect("search")
     return render(request, "error_message.html")
 
 
@@ -21,18 +24,23 @@ class Search(View):
 
     results = None
     template_name = 'search.html'
+    error = None
 
     @method_decorator(login_required)
     def get(self, request):
         if request.GET.get('name') is not None:
             if request.GET.get('type_search') == 'name_check':
-                pass
+                if request.GET.get('name') == 'maria':
+                    self.error = 'a'
+                else:
+                    self.error = None
             elif request.GET.get('type_search') == 'cpf_check':
                 pass
             else:
                 return render(request, 'error_message.html')
             self.results = CustomUser.objects.all()
-        return render(request, self.template_name, {'results': self.results})
+        return render(request, self.template_name, {'results': self.results,
+                                                    'error': self.error})
 
 
 @login_required
@@ -92,13 +100,18 @@ class RegisterPatient(View):
 
 class SearchAppt(View):
     results = None
-
+    error = None
     def get(self, request):
         request.session['active'] = 'no'
         if request.GET.get('name') is not None:
+            if request.GET.get('name') == 'maria':
+                self.error = 'b'
+            else:
+                self.error = None
             self.results = 'a'
 
-        return render(request, 'search_appt.html', {'results': self.results})
+        return render(request, 'search_appt.html', {'results': self.results,
+                                                    'error': self.error})
 
 
 class ApptPage(View):
@@ -110,7 +123,8 @@ class ApptPage(View):
         else:
             active = False
 
-        return render(request, 'appt_page.html', {'active': active})
+        return render(request, 'appt_page.html', {'active': active,
+                                                  'active2': appt_ative})
 
 
 class SeeAppt(View):
@@ -153,3 +167,7 @@ class RegisterReturn(View):
         print(str(request.session.get('date')) + ' ' +
               str(request.POST.get('select_horarios')))
         return redirect('hello')
+
+
+def confirm(request):
+    return render(request, 'confirm_see.html')
