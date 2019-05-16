@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Página do paciente {% endblock %}
+{% block title %} Página da consulta {% endblock %}
 
 {% block main %}
 
@@ -32,7 +32,7 @@
 
                         {% if active2 == 'no' %}
 
-                            <a href="{% url 'search' %}" class="btn btn-danger btn-lg active float-right return_button"
+                            <a href="{% url 'search' %}" class="btn btn-danger btn-lg active return_button"
                                role="button" aria-pressed="true">
                                 Cancelar
                             </a>
