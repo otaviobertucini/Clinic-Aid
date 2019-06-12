@@ -40,16 +40,19 @@
         {% if results %}
 
             <div class="list-group" id="list-tab" role="tablist">
-                <a class="list-group-item list-group-item-action" href="{% url 'patient_page' 1 %}">
-                    Otávio Thomas Bertucini
-                </a>
+
+            {% for res in results %}
 
                 <a class="list-group-item list-group-item-action" href="{% url 'patient_page' 1 %}">
-                    Otávio Silva
+                    {{ res.name }}
                 </a>
+
+            {% endfor %}
 
 
             </div>
+
+
 
         {% endif %}
 

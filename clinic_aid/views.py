@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from clinic.models import CustomUser
+from clinic.models import CustomUser, Patient
 from django.views import View
 from clinic.extras import check_date
 
@@ -30,15 +30,13 @@ class Search(View):
     def get(self, request):
         if request.GET.get('name') is not None:
             if request.GET.get('type_search') == 'name_check':
-                if request.GET.get('name') == 'maria':
-                    self.error = 'a'
-                else:
-                    self.error = None
+                name = request.GET.get('name')
+                self.results = Patient.objects.filter(name__startswith=name)
             elif request.GET.get('type_search') == 'cpf_check':
                 pass
             else:
                 return render(request, 'error_message.html')
-            self.results = CustomUser.objects.all()
+            # self.results = CustomUser.objects.all()
         return render(request, self.template_name, {'results': self.results,
                                                     'error': self.error})
 
@@ -94,7 +92,17 @@ class RegisterPatient(View):
         return render(request, 'register_patient.html')
 
     def post(self, request):
-        print("Paciente cadastrado!")
+        f_name = request.POST.get('patient_name')
+        f_date = request.POST.get('patient_date')
+        f_gender = request.POST.get('patient_gender')
+        f_cpf = request.POST.get('patient_cpf')
+        f_name = request.POST.get('patient_name')
+        f_plan = request.POST.get('patient_plan')
+        f_nplan = request.POST.get('patient_plan_number')
+        f_obs = request.POST.get('patient_observations')
+        patient = Patient(name=f_name, dob=f_date, gender=f_gender, cpf=f_cpf,
+                          plan=f_plan, number=f_nplan, observations=f_obs)
+        patient.save()
         return redirect('hello')
 
 

@@ -11,18 +11,18 @@
         <div class="form-group">
             <label for="patient_name">Nome</label>
             <input type="text" class="form-control form_check" id="patient_name"
-                   aria-describedby="Nome paciente" placeholder="Nome" required>
+                   aria-describedby="Nome paciente" placeholder="Nome" required name="patient_name">
         </div>
 
         <div class="form-group">
             <label for="patient_date">Data de nascimento</label>
-            <input type="date" class="form-control form_check" id="patient_date"
+            <input type="date" class="form-control form_check" id="patient_date" name="patient_date"
                    placeholder="Data de nascimento" required>
         </div>
 
         <div class="form-group">
             <label for="patient_gender"> Gênero </label>
-            <select class="form-control form_check" id="patient_gender" required>
+            <select class="form-control form_check" id="patient_gender" name="patient_gender" required>
                 <option> Masculino </option>
                 <option> Feminino </option>
             </select>
@@ -31,7 +31,7 @@
         <div class="form-group">
             <label for="patient_cpf">CPF</label>
             <input type="number" class="form-control form_check" id="patient_cpf"
-                   placeholder="CPF" required>
+                   name="patient_cpf" placeholder="CPF" required>
         </div>
         <div class="alert alert-danger" id="cpf_alert" role="alert" hidden>
             Forma inválida do CPF
@@ -39,19 +39,20 @@
 
         <div class="form-group">
             <label for="patient_plan">Plano de Saúde</label>
-            <input type="text" class="form-control form_check" id="patient_plan"
+            <input type="text" class="form-control form_check" id="patient_plan" name="patient_plan"
                    placeholder="Plano de Saúde" required>
         </div>
 
         <div class="form-group">
             <label for="patient_plan_number">Número do plano</label>
             <input type="number" class="form-control form_check" id="patient_plan_number"
-                   placeholder="Número do plano" required>
+                   name="patient_plan_number" placeholder="Número do plano" required>
         </div>
 
         <div class="form-group">
             <label for="patient_observations">Observações</label>
-            <textarea class="form-control" id="patient_observations" rows="3"></textarea>
+            <textarea class="form-control" id="patient_observations"
+                      rows="3" name="patient_observations"></textarea>
         </div>
 
         <button type="button" class="btn btn-primary" id="submit_new_patient">Cadastrar</button>
