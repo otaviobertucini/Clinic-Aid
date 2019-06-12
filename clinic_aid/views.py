@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from clinic.models import CustomUser, Patient
+from clinic.models import CustomUser, Patient, Doctor
 from django.views import View
 from clinic.extras import check_date
 
@@ -41,25 +41,37 @@ class Search(View):
                                                     'error': self.error})
 
 
-@login_required
-def patient_page(request, id):
-    return render(request, 'patient_page.html')
+class PatientPage(View):
+
+    def get(self, request, *args, **kwargs):
+
+        result = Patient.objects.filter(id=kwargs['id'])[0]
+
+        return render(request, 'patient_page.html', {'result': result})
 
 
 class DocSelection(View):
     results = None
+    doctors = Doctor.objects.all()
 
     @method_decorator(login_required)
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         error = ""
-        if request.GET.get('doctor') is not None:
-            if check_date(request.GET.get('date')):
-                request.session['doctor'] = request.GET.get('doctor')
-                request.session['date'] = request.GET.get('date')
-                return redirect('info_appt')
-            else:
-                error = "Data deve ser maior que o dia atual!"
-        return render(request, 'doc_selection.html', {'results': self.results, 'error': error})
+        return render(request, 'doc_selection.html', {'results': self.results, 'error': error,
+                                                      'doctors': self.doctors})
+
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        if check_date(request.POST.get('date')):
+            request.session['doctor'] = request.POST.get('doctor')
+            request.session['date'] = request.POST.get('date')
+            request.session['patient_id'] = self.kwargs['person']
+            return redirect('info_appt')
+        else:
+            error = "Data deve ser maior que o dia atual!"
+
+        return render(request, 'doc_selection.html', {'results': self.results, 'error': error,
+                                                      'doctors': self.doctors})
 
 
 # ControleAgendar
@@ -68,10 +80,13 @@ class ScheduleControl(View):
 
     @method_decorator(login_required)
     def get(self, request):
-        doctor = request.session.get('doctor')
+        doctor_id = request.session.get('doctor')
         date = request.session.get('date')
-        # doctor = ''
-        # date = ''
+        patient_id = request.session.get('patient_id')
+
+        doctor = Doctor.objects.filter(id=doctor_id)[0]
+        patient = Patient.objects.filter(id=patient_id)[0]
+
         used_times = []
         times = []
         for i in range(9, 18):

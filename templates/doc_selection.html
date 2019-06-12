@@ -4,15 +4,19 @@
 
 {% block main %}
 
-    <form method="get" id="doc_selection">
+    <form method="post" id="doc_selection">
+        {% csrf_token %}
+
         <div class="form-group col-md-4">
             <label for="select_doctor">Doutor</label>
             <select id="select_doctor" class="form-control form_check" name="doctor" required>
-                <option selected>Dr. Carlos</option>
-                <option>Dr. Carluxo</option>
-                {% for res in results %}
+                {% for doc in doctors %}
 
-                <option> {{res.username}} </option>
+                    {% if doc.gender == 'f' %}
+                        <option label="Dra. {{doc.name}}"> {{ doc.id }} </option>
+                    {% else %}
+                        <option label="Dr. {{doc.name}}"> {{ doc.id }} </option>
+                    {% endif %}
 
                 {% endfor %}
             </select>
