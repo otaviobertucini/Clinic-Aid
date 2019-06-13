@@ -23,7 +23,6 @@ class Patient(Person):
     plan = models.CharField(max_length=20)  # plano de saúde
     number = models.IntegerField()
     observations = models.TextField(max_length=200)  # observações
-    # TODO: consultas relacionadas
 
 
 class User(Person):
@@ -39,7 +38,41 @@ class Secretary(User):
 class Doctor(User):
 
     crm = models.CharField(max_length=5)
-    # TODO: consultas e dias relacionados
+
+
+class Day(models.Model):
+
+    date = models.DateField()
+    doctor = models.ForeignKey(Doctor, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return str(self.date)
+
+
+class Time(models.Model):
+
+    time = models.CharField(max_length=4)
+    days = models.ForeignKey(Day, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return str(self.time[0:2] + ':' + self.time[2:])
+
+
+class Appointment(models.Model):
+
+    doctor = models.ForeignKey(Doctor, on_delete=models.DO_NOTHING)
+    patient = models.ForeignKey(Patient, on_delete=models.DO_NOTHING)
+    secretary = models.ForeignKey(Secretary, on_delete=models.DO_NOTHING)
+    reason = models.TextField(max_length=200)
+    observations = models.TextField(max_length=200)
+    is_return = models.BooleanField(default=False)
+    active = models.BooleanField(default=False)
+    date = models.ForeignKey(Day, on_delete=models.DO_NOTHING)
+    hour = models.CharField(max_length=4)
+    rapport = models.TextField(max_length=200, null=True)
+
+    def __str__(self):
+        return str(self.patient.name + ' ' + str(self.date))
 
 
 

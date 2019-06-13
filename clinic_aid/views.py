@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from clinic.models import CustomUser, Patient, Doctor
+from clinic.models import Patient, Doctor, Appointment, Secretary, Time, Day
 from django.views import View
 from clinic.extras import check_date
 
@@ -82,22 +82,58 @@ class ScheduleControl(View):
     def get(self, request):
         doctor_id = request.session.get('doctor')
         date = request.session.get('date')
-        patient_id = request.session.get('patient_id')
+        # patient_id = request.session.get('patient_id')
 
         doctor = Doctor.objects.filter(id=doctor_id)[0]
-        patient = Patient.objects.filter(id=patient_id)[0]
+        # patient = Patient.objects.filter(id=patient_id)[0]
+
+        date_doctor = doctor.day_set.filter(date=date)
 
         used_times = []
+        if date_doctor:
+            date_doctor = date_doctor[0]
+            times_list = list(date_doctor.time_set.all())
+            for time in times_list:
+                used_times.append(time.time)
+
+        print(used_times)
         times = []
         for i in range(9, 18):
-            if i * 100 not in used_times:
+            if str(i * 100) not in used_times:
                 times.append(str(i) + ":00")
-            if i * 100 + 30 not in used_times:
+            if str(i * 100 + 30) not in used_times:
                 times.append(str(i) + ":30")
 
         return render(request, 'info_appt.html', {'times': times})
 
     def post(self, request):
+
+        a_hour = request.POST.get('select_horarios')
+        a_reason = request.POST.get('reason_appt')
+        a_obs = request.POST.get('observations')
+        a_date = request.session.get('date')
+
+        doctor_id = request.session.get('doctor')
+        patient_id = request.session.get('patient_id')
+        a_doctor = Doctor.objects.filter(id=doctor_id)[0]
+
+        try:
+            day = Day.objects.get(date=a_date)
+        except Day.DoesNotExist:
+            day = Day(date=a_date, doctor=a_doctor)
+            day.save()
+            day = Day.objects.get(date=a_date)
+
+        a_patient = Patient.objects.filter(id=patient_id)[0]
+        a_secretary = Secretary.objects.filter(user_x=request.user)[0]
+
+        time = Time(time=a_hour.replace(':', ''), days=day)
+        time.save()
+
+        appt = Appointment(doctor=a_doctor, patient=a_patient, secretary=a_secretary,
+                           reason=a_reason, hour=a_hour, observations=a_obs, date=day)
+        appt.save()
+
         return redirect('hello')
 
 
@@ -107,7 +143,6 @@ class RegisterPatient(View):
         return render(request, 'register_patient.html')
 
     def post(self, request):
-        f_name = request.POST.get('patient_name')
         f_date = request.POST.get('patient_date')
         f_gender = request.POST.get('patient_gender')
         f_cpf = request.POST.get('patient_cpf')
@@ -124,6 +159,7 @@ class RegisterPatient(View):
 class SearchAppt(View):
     results = None
     error = None
+
     def get(self, request):
         request.session['active'] = 'no'
         if request.GET.get('name') is not None:
