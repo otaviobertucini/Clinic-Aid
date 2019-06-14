@@ -46,8 +46,10 @@ class PatientPage(View):
     def get(self, request, *args, **kwargs):
 
         result = Patient.objects.filter(id=kwargs['id'])[0]
+        appts = Appointment.objects.filter(patient=result)
 
-        return render(request, 'patient_page.html', {'result': result})
+        return render(request, 'patient_page.html', {'result': result,
+                                                     'appts': appts})
 
 
 class DocSelection(View):
@@ -157,26 +159,26 @@ class RegisterPatient(View):
 
 
 class SearchAppt(View):
-    results = None
     error = None
 
     def get(self, request):
         request.session['active'] = 'no'
-        if request.GET.get('name') is not None:
-            if request.GET.get('name') == 'maria':
-                self.error = 'b'
-            else:
-                self.error = None
-            self.results = 'a'
+        name = request.GET.get('name')
+        appts = Appointment.objects.none()
+        if name is not None:
+            patients = Patient.objects.filter(name__startswith=name)
+            for patient in patients:
+                appt = Appointment.objects.filter(patient=patient)
+                appts = appts | appt
 
-        return render(request, 'search_appt.html', {'results': self.results,
-                                                    'error': self.error})
+        return render(request, 'search_appt.html', {'error': self.error,
+                                                    'appts': appts},)
 
 
 class ApptPage(View):
 
-    def get(self, request):
-        print(str(request.session.get('active')))
+    def get(self, request, *args, **kwargs):
+        # print(str(request.session.get('active')))
         if(request.session.get('active') == 'yes'):
             active = True
         else:

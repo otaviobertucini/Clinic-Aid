@@ -46,8 +46,9 @@ class Day(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return str(self.date)
-
+        # return str(self.date)
+        s = str(self.date).split('-')
+        return str(s[2] + '/' + s[1] + '/' + s[0])
 
 class Time(models.Model):
 
