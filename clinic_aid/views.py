@@ -30,7 +30,8 @@ class Search(View):
                 name = request.GET.get('name')
                 self.results = Patient.objects.filter(name__startswith=name)
             elif request.GET.get('type_search') == 'cpf_check':
-                pass
+                cpf = request.GET.get('name')
+                self.results = Patient.objects.filter(cpf__startswith=cpf)
             else:
                 return render(request, 'error_message.html')
             # self.results = CustomUser.objects.all()
