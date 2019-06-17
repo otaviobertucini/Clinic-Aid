@@ -71,6 +71,7 @@ class Appointment(models.Model):
     date = models.ForeignKey(Day, on_delete=models.DO_NOTHING)
     date_string = models.DateField(null=True)
     hour = models.CharField(max_length=4)
+    time_int = models.IntegerField(null=True)
     rapport = models.TextField(max_length=200, null=True)
 
     def __str__(self):

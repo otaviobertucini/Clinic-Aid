@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from clinic.models import Patient, Doctor, Appointment, Secretary, Time, Day
@@ -74,6 +74,31 @@ class DocSelection(View):
                                                       'doctors': self.doctors})
 
 
+def get_hours(doctor, date):
+
+    date_doctor = doctor.day_set.filter(date=date)
+
+    used_times = []
+    print(date_doctor)
+    if date_doctor:
+        date_doctor = date_doctor[0]
+        times_list = list(date_doctor.time_set.all())
+        print('times: ')
+        print(times_list)
+        for time in times_list:
+            used_times.append(time.time)
+
+    print(used_times)
+    times = []
+    for i in range(9, 18):
+        if str(i * 100) not in used_times:
+            times.append(str(i) + ":00")
+        if str(i * 100 + 30) not in used_times:
+            times.append(str(i) + ":30")
+
+    return times
+
+
 # ControleAgendar
 class ScheduleControl(View):
     results = None
@@ -82,27 +107,10 @@ class ScheduleControl(View):
     def get(self, request):
         doctor_id = request.session.get('doctor')
         date = request.session.get('date')
-        # patient_id = request.session.get('patient_id')
 
         doctor = Doctor.objects.filter(id=doctor_id)[0]
-        # patient = Patient.objects.filter(id=patient_id)[0]
 
-        date_doctor = doctor.day_set.filter(date=date)
-
-        used_times = []
-        if date_doctor:
-            date_doctor = date_doctor[0]
-            times_list = list(date_doctor.time_set.all())
-            for time in times_list:
-                used_times.append(time.time)
-
-        print(used_times)
-        times = []
-        for i in range(9, 18):
-            if str(i * 100) not in used_times:
-                times.append(str(i) + ":00")
-            if str(i * 100 + 30) not in used_times:
-                times.append(str(i) + ":30")
+        times = get_hours(doctor, date)
 
         return render(request, 'info_appt.html', {'times': times})
 
@@ -132,7 +140,7 @@ class ScheduleControl(View):
 
         appt = Appointment(doctor=a_doctor, patient=a_patient, secretary=a_secretary,
                            reason=a_reason, hour=a_hour, observations=a_obs, date=day,
-                           date_string=a_date)
+                           date_string=a_date, time_int=int(a_hour.replace(':', '')))
         appt.save()
 
         return redirect('hello')
@@ -172,11 +180,11 @@ class SearchAppt(View):
             if type_search == 'patient_check':
                 patients = Patient.objects.filter(name__startswith=name)
                 for patient in patients:
-                    appt = Appointment.objects.filter(patient=patient)
+                    appt = Appointment.objects.filter(patient=patient, active=False)
                     appts = appts | appt
 
             else:
-                doctors = Doctor.objects.filter(name__startswith=name)
+                doctors = Doctor.objects.filter(name__startswith=name, active=False)
                 for doc in doctors:
                     appt = Appointment.objects.filter(doctor=doc)
                     appts = appts | appt
@@ -191,19 +199,6 @@ class SearchAppt(View):
                                                     'appts': appts},)
 
 
-def filter_date(query, start, end):
-    start = start.split('-')
-    end = end.split('-')
-    start = datetime.datetime(int(start[0]), int(start[1]), int(start[2]))
-    end = datetime.datetime(int(end[0]), int(end[1]), int(end[2]))
-
-    print(query[0].date > start)
-
-    for res in query:
-        pass
-
-
-
 class ApptPage(View):
 
     def get(self, request, *args, **kwargs):
@@ -216,30 +211,35 @@ class ApptPage(View):
 
 class SeeAppt(View):
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         return render(request, 'see_appt.html')
 
-    def post(self, request):
-        request.session['active'] = 'yes'
-        return redirect('appt_page')
+    def post(self, request, *args, **kwargs):
+
+        appt = Appointment.objects.get(id=self.kwargs['id'])
+
+        appt.rapport = request.POST.get('report_appt')
+        appt.active = True
+        appt.save()
+
+        return redirect('hello')
 
 
 class RegisterReturn(View):
     times_ok = None
     date = None
 
-    def get(self, request):
-        used_times = []
+    def get(self, request, *args, **kwargs):
         times = []
         date = ''
+
+        appt = Appointment.objects.get(id=self.kwargs['id'])
+        doctor = appt.doctor
+
         if request.GET.get('date'):
             if check_date(request.GET.get('date')):
                 request.session['date'] = request.GET.get('date')
-                for i in range(9, 18):
-                    if i * 100 not in used_times:
-                        times.append(str(i) + ":00")
-                    if i * 100 + 30 not in used_times:
-                        times.append(str(i) + ":30")
+                times = get_hours(doctor, request.GET.get('date'))
                 date_split = request.GET.get('date').split('-')
                 date = date_split[2] + '/' + date_split[1] + '/' + date_split[0]
                 self.times_ok = True
@@ -250,11 +250,65 @@ class RegisterReturn(View):
                       {'times_ok': self.times_ok, 'times': times,
                        'date': date})
 
-    def post(self, request):
-        print(str(request.session.get('date')) + ' ' +
-              str(request.POST.get('select_horarios')))
+    def post(self, request, *args, **kwargs):
+        # print(str(request.session.get('date')) + ' ' +
+        #       str(request.POST.get('select_horarios')))
+
+        old_appt = Appointment.objects.get(id=self.kwargs['id'])
+
+        a_date = request.session.get('date')
+        a_hour = request.POST.get('select_horarios')
+        try:
+            day = Day.objects.get(date=a_date)
+        except Day.DoesNotExist:
+            day = Day(date=a_date, doctor=old_appt.doctor)
+            day.save()
+            day = Day.objects.get(date=a_date)
+
+        time = Time(time=a_hour.replace(':', ''), days=day)
+        time.save()
+
+        new_appr = Appointment(doctor=old_appt.doctor, patient=old_appt.patient,
+                               secretary=old_appt.secretary, reason=old_appt.reason,
+                               observations=old_appt.observations, is_return=True,
+                               date=day, date_string=a_date, hour=time,
+                               time_int=int(a_hour.replace(':', '')))
+
+        new_appr.save()
+
         return redirect('hello')
 
 
-def confirm(request):
-    return render(request, 'confirm_see.html')
+class CancelAppt(View):
+
+    def get(self, request, *args, **kwargs):
+
+        appt = get_object_or_404(Appointment, id=self.kwargs['id'])
+        appt.delete()
+
+        return redirect('hello')
+
+
+class Confirm(View):
+
+    def get(self, request, *args, **kwargs):
+
+        doctor = Doctor.objects.get(user_x=request.user)
+
+        appts = Appointment.objects.filter(doctor=doctor,
+                                           active=False).order_by('date_string')
+
+        if appts:
+            appt_date = appts[0].date
+            appts = appts.filter(date=appt_date)
+            appts = appts.order_by('time_int')
+            appt = appts[0]
+        else:
+            appt = None
+
+        print(appts)
+
+        return render(request, 'confirm_see.html', {'appt': appt})
+
+# def confirm(request):
+#     return render(request, 'confirm_see.html')

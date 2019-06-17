@@ -18,18 +18,18 @@
                 <li class="list-group-item">
                     {% if user.role == 'medic' %}
 
-                        <a href="{% url 'see_appt' %}" class="btn btn-success btn-lg active float-left btn_appt"
+                        <a href="{% url 'see_appt' appt.id %}" class="btn btn-success btn-lg active float-left btn_appt"
                            role="button" aria-pressed="true">
                             Atender
                         </a>
-                        <a href="{% url 'search' %}" class="btn btn-danger btn-lg active float-right btn_appt"
+                        <a href="{% url 'cancel_appt' appt.id %}" class="btn btn-danger btn-lg active float-right btn_appt"
                            role="button" aria-pressed="true">
                             Cancelar
                         </a>
 
                     {% else %}
 
-                        <a href="{% url 'search' %}" class="btn btn-danger btn-lg active return_button"
+                        <a href="{% url 'cancel_appt' appt.id %}" class="btn btn-danger btn-lg active return_button"
                            role="button" aria-pressed="true">
                             Cancelar
                         </a>
@@ -40,7 +40,7 @@
                 {% else %}
 
                 <li class="list-group-item">
-                    <a href="{% url 'reg_return' %}" class="btn btn-success btn-lg active float-left return_button"
+                    <a href="{% url 'reg_return' appt.id %}" class="btn btn-success btn-lg active float-left return_button"
                        role="button" aria-pressed="true">
                         Marcar retorno
                     </a>
@@ -80,6 +80,14 @@
                         {% endif %}
                     </span>
                 </li>
+                {% if appt.active == True %}
+                <li class="list-group-item">
+                    <span><strong>Relatório: </strong>
+                    </span> <span class="span_list">
+                        {{ appt.rapport }}
+                    </span>
+                </li>
+                {% endif %}
 
             </ul>
         </div>

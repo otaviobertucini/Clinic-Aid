@@ -4,16 +4,24 @@
 
 {% block main %}
 
+    {% if appt %}
+
     <h3> Deseja atender o próximo paciente? </h3>
 
     <a type="button" class="btn btn-success btn-primary"
-       href="{% url 'see_appt' %}">
-        Confirmar
+       href="{% url 'see_appt' appt.id %}">
+        Confirmar {{ appt.patient.name }} {{ appt.hour }}
     </a>
 
     <a type="button" class="btn btn-danger btn-primary"
        href="{% url 'hello' %}">
         Cancelar
     </a>
+
+    {% else %}
+
+    <h3> Nenhuma consulta próxima agendada. </h3>
+
+    {% endif %}
 
 {% endblock %}

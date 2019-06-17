@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import hello, confirm
+from .views import hello
 from .views import Search, DocSelection, ScheduleControl, RegisterPatient, \
-    SearchAppt, ApptPage, SeeAppt, RegisterReturn, PatientPage
+    SearchAppt, ApptPage, SeeAppt, RegisterReturn, PatientPage, CancelAppt, Confirm
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
@@ -34,8 +34,9 @@ urlpatterns = [
     path('info_appt', ScheduleControl.as_view(), name='info_appt'),
     path('new_paciente', RegisterPatient.as_view(), name='new_patient'),
     path('search_appt', SearchAppt.as_view(), name="search_appt"),
-    path('see_appt', SeeAppt.as_view(), name="see_appt"),
-    path('reg_return', RegisterReturn.as_view(), name="reg_return"),
-    path('confirm', confirm, name="confirm"),
+    path('see_appt/<int:id>', SeeAppt.as_view(), name="see_appt"),
+    path('reg_return/<int:id>', RegisterReturn.as_view(), name="reg_return"),
+    path('confirm', Confirm.as_view(), name="confirm"),
     path('appt_page/<int:id>', ApptPage.as_view(), name="appt_page"),
+    path('cancel/<int:id>', CancelAppt.as_view(), name="cancel_appt"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

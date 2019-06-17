@@ -12,12 +12,15 @@
                 <li class="list-group-item"><span><strong>Nome</strong></span> {{ result.name }}</li>
                 <li class="list-group-item"><span><strong>CPF</strong></span> {{ result.cpf }}</li>
                 <li class="list-group-item"><span><strong>Plano</strong></span> {{ result.plan }} </li>
+
+                {% if user.role == 'secretary' %}
                 <li class="list-group-item">
                     <a href="{% url 'doc_selection' result.id %}" class="btn btn-success btn-lg active return_button"
                        role="button" aria-pressed="true">
                         Nova Consulta
                     </a>
                 </li>
+                {% endif %}
             </ul>
         </div>
 
