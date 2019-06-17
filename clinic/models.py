@@ -43,7 +43,7 @@ class Doctor(User):
 class Day(models.Model):
 
     date = models.DateField()
-    doctor = models.ForeignKey(Doctor, on_delete=models.DO_NOTHING)
+    doctor = models.ForeignKey(Doctor, on_delete=models.DO_NOTHING, null=True)
 
     def __str__(self):
         # return str(self.date)
@@ -69,6 +69,7 @@ class Appointment(models.Model):
     is_return = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
     date = models.ForeignKey(Day, on_delete=models.DO_NOTHING)
+    date_string = models.DateField(null=True)
     hour = models.CharField(max_length=4)
     rapport = models.TextField(max_length=200, null=True)
 

@@ -5,10 +5,7 @@ from django.utils.decorators import method_decorator
 from clinic.models import Patient, Doctor, Appointment, Secretary, Time, Day
 from django.views import View
 from clinic.extras import check_date
-
-
-appt_ative = 'no'
-
+import datetime
 
 def hello(request):
     user = request.user
@@ -133,7 +130,8 @@ class ScheduleControl(View):
         time.save()
 
         appt = Appointment(doctor=a_doctor, patient=a_patient, secretary=a_secretary,
-                           reason=a_reason, hour=a_hour, observations=a_obs, date=day)
+                           reason=a_reason, hour=a_hour, observations=a_obs, date=day,
+                           date_string=a_date)
         appt.save()
 
         return redirect('hello')
@@ -164,28 +162,55 @@ class SearchAppt(View):
     def get(self, request):
         request.session['active'] = 'no'
         name = request.GET.get('name')
+        type_search = request.GET.get('type_search')
         appts = Appointment.objects.none()
         if name is not None:
-            patients = Patient.objects.filter(name__startswith=name)
-            for patient in patients:
-                appt = Appointment.objects.filter(patient=patient)
-                appts = appts | appt
+            date_start = request.GET.get('date_start')
+            date_end = request.GET.get('date_end')
+
+            if type_search == 'patient_check':
+                patients = Patient.objects.filter(name__startswith=name)
+                for patient in patients:
+                    appt = Appointment.objects.filter(patient=patient)
+                    appts = appts | appt
+
+            else:
+                doctors = Doctor.objects.filter(name__startswith=name)
+                for doc in doctors:
+                    appt = Appointment.objects.filter(doctor=doc)
+                    appts = appts | appt
+
+            if date_start != '':
+                appts = appts.filter(date_string__range=[date_start, date_end])
+
+            if not appts:
+                self.error = "a"
 
         return render(request, 'search_appt.html', {'error': self.error,
                                                     'appts': appts},)
 
 
+def filter_date(query, start, end):
+    start = start.split('-')
+    end = end.split('-')
+    start = datetime.datetime(int(start[0]), int(start[1]), int(start[2]))
+    end = datetime.datetime(int(end[0]), int(end[1]), int(end[2]))
+
+    print(query[0].date > start)
+
+    for res in query:
+        pass
+
+
+
 class ApptPage(View):
 
     def get(self, request, *args, **kwargs):
-        # print(str(request.session.get('active')))
-        if(request.session.get('active') == 'yes'):
-            active = True
-        else:
-            active = False
 
-        return render(request, 'appt_page.html', {'active': active,
-                                                  'active2': appt_ative})
+        appt_id = self.kwargs['id']
+        appt = Appointment.objects.get(id=appt_id)
+
+        return render(request, 'appt_page.html', {'appt': appt})
 
 
 class SeeAppt(View):

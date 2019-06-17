@@ -9,12 +9,11 @@
 
             <ul class="list-group">
                 <li class="list-group-item text-muted"> Paciente </li>
-                <li class="list-group-item"><span><strong>Nome</strong></span> Otávio Thomas Bertucini</li>
-                <li class="list-group-item"><span><strong>CPF</strong></span> 999.999.999-99</li>
-                <li class="list-group-item"><span><strong>Telefone</strong></span> (49) 3444-1844 </li>
-                <li class="list-group-item"><span><strong>Plano</strong></span> Unimed </li>
+                <li class="list-group-item"><span><strong>Nome</strong></span> {{appt.patient.name}} </li>
+                <li class="list-group-item"><span><strong>CPF</strong></span> {{appt.patient.cpf}} </li>
+                <li class="list-group-item"><span><strong>Plano</strong></span> {{appt.patient.plan}} </li>
 
-                {% if active == False %}
+                {% if appt.active == False %}
 
                 <li class="list-group-item">
                     {% if user.role == 'medic' %}
@@ -30,21 +29,10 @@
 
                     {% else %}
 
-                        {% if active2 == 'no' %}
-
-                            <a href="{% url 'search' %}" class="btn btn-danger btn-lg active return_button"
-                               role="button" aria-pressed="true">
-                                Cancelar
-                            </a>
-
-                        {% else %}
-
-                            <a href="{% url 'reg_return' %}" class="btn btn-success btn-lg active float-left return_button"
-                               role="button" aria-pressed="true">
-                                Marcar retorno
-                            </a>
-
-                        {% endif %}
+                        <a href="{% url 'search' %}" class="btn btn-danger btn-lg active return_button"
+                           role="button" aria-pressed="true">
+                            Cancelar
+                        </a>
 
                     {% endif %}
                 </li>
@@ -68,23 +56,29 @@
                 <li class="list-group-item text-muted"> Dados Consulta </li>
                 <li class="list-group-item">
                     <span><strong>Motivo: </strong></span >
-                    <span class="span_list"> Rinite </span>
+                    <span class="span_list"> {{appt.reason}} </span>
                 </li>
                 <li class="list-group-item"> <span>
                     <strong>Observações: </strong></span>
-                    <span class="span_list"> Paciente espirra muito </span>
+                    <span class="span_list"> {{appt.observations}} </span>
                 </li>
                 <li class="list-group-item">
                     <span><strong>Data: </strong>
-                    </span> <span class="span_list"> 12/05/2019 </span>
+                    </span> <span class="span_list"> {{appt.date}} </span>
                 </li>
                 <li class="list-group-item">
                     <span><strong>Horário: </strong>
-                    </span> <span class="span_list"> 10:30 </span>
+                    </span> <span class="span_list"> {{appt.hour}} </span>
                 </li>
                 <li class="list-group-item">
                     <span><strong>Retorno: </strong>
-                    </span> <span class="span_list"> Não </span>
+                    </span> <span class="span_list">
+                        {% if appt.is_return == True %}
+                            Sim
+                        {% else %}
+                            Não
+                        {% endif %}
+                    </span>
                 </li>
 
             </ul>
