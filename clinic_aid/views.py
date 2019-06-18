@@ -220,9 +220,10 @@ class SeeAppt(View):
 
         appt.rapport = request.POST.get('report_appt')
         appt.active = True
+        appt_id = appt.id
         appt.save()
 
-        return redirect('hello')
+        return redirect('appt_page', id=appt_id)
 
 
 class RegisterReturn(View):
@@ -306,9 +307,4 @@ class Confirm(View):
         else:
             appt = None
 
-        print(appts)
-
         return render(request, 'confirm_see.html', {'appt': appt})
-
-# def confirm(request):
-#     return render(request, 'confirm_see.html')
