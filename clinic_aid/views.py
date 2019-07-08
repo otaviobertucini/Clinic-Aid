@@ -17,6 +17,7 @@ def hello(request):
     return render(request, "error_message.html")
 
 
+# ControleBuscar
 class Search(View):
 
     results = None
@@ -39,6 +40,7 @@ class Search(View):
                                                     'error': self.error})
 
 
+# ControleVisualizar
 class PatientPage(View):
 
     def get(self, request, *args, **kwargs):
@@ -50,6 +52,7 @@ class PatientPage(View):
                                                      'appts': appts})
 
 
+# ControleAgendar
 class DocSelection(View):
     results = None
     doctors = Doctor.objects.all()
@@ -146,6 +149,7 @@ class ScheduleControl(View):
         return redirect('hello')
 
 
+# ControleCadastrar
 class RegisterPatient(View):
 
     def get(self, request):
@@ -184,9 +188,9 @@ class SearchAppt(View):
                     appts = appts | appt
 
             else:
-                doctors = Doctor.objects.filter(name__startswith=name, active=False)
+                doctors = Doctor.objects.filter(name__startswith=name)
                 for doc in doctors:
-                    appt = Appointment.objects.filter(doctor=doc)
+                    appt = Appointment.objects.filter(doctor=doc, active=False)
                     appts = appts | appt
 
             if date_start != '':
@@ -209,6 +213,7 @@ class ApptPage(View):
         return render(request, 'appt_page.html', {'appt': appt})
 
 
+# ControleAtender
 class SeeAppt(View):
 
     def get(self, request, *args, **kwargs):
@@ -226,6 +231,7 @@ class SeeAppt(View):
         return redirect('appt_page', id=appt_id)
 
 
+# ControleRetorno
 class RegisterReturn(View):
     times_ok = None
     date = None
@@ -280,6 +286,7 @@ class RegisterReturn(View):
         return redirect('hello')
 
 
+# ControleCancelar
 class CancelAppt(View):
 
     def get(self, request, *args, **kwargs):

@@ -50,6 +50,7 @@ class Day(models.Model):
         s = str(self.date).split('-')
         return str(s[2] + '/' + s[1] + '/' + s[0])
 
+
 class Time(models.Model):
 
     time = models.CharField(max_length=4)
